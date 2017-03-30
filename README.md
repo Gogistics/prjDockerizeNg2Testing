@@ -2,6 +2,8 @@
 
 This repo aims to demo how to dockerize e2e and unit tests of Angular 2 applications.
 
+[Demo of Dockerized Testing with Strider-CD](https://youtu.be/P8oMDF532y8)
+
 ---
 
 ## First Part: quick start to do e2e and unit tests inside Docker container
