@@ -1,6 +1,5 @@
 # Dockerize e2e and unit test of applications built with Angular 2
 
-
 This repo aims to demo how to dockerize e2e and unit tests of Angular 2 applications.
 
 ---
