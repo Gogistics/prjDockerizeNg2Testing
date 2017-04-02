@@ -19,6 +19,9 @@ ENV CA_CERTIFICATES_JAVA_VERSION 20161107~bpo8+1
 # add xvfb
 ADD xvfb-chromium /usr/bin/xvfb-chromium
 
+# for e2e
+ADD ./scripts/get_docker_java_home.sh /usr/local/bin/docker-java-home
+
 # Commands
 RUN apt-get update && \
     set -xe && \
@@ -31,27 +34,17 @@ RUN apt-get update && \
     npm install @angular/cli@${NG_CLI_VERSION} -g && \
     ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome && \
     ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browser && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
-
-# for e2e
-RUN { echo '#!/bin/sh'; \
-      echo 'set -e'; \
-      echo; \
-      echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
-    } > /usr/local/bin/docker-java-home \
-    && chmod +x /usr/local/bin/docker-java-home
-
-RUN set -x \
-    && apt-get update \
-    && apt-get install -y \
-      openjdk-8-jdk="$JAVA_DEBIAN_VERSION" \
-      ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" \
-    && rm -rf /var/lib/apt/lists/* \
-    && [ "$JAVA_HOME" = "$(docker-java-home)" ]
-
-RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
+    rm -rf /var/lib/apt/lists/* && \
+    echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list && \
+    chmod +x /usr/local/bin/docker-java-home && \
+    set -x && \
+    apt-get update && \
+    apt-get install -y \
+    openjdk-8-jdk="$JAVA_DEBIAN_VERSION" \
+    ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" && \
+    rm -rf /var/lib/apt/lists/* && \
+    [ "$JAVA_HOME" = "$(docker-java-home)" ] && \
+    /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
 
 # work dir
